@@ -165,6 +165,10 @@
 				RelativePath=".\RTree.c"
 				>
 			</File>
+			<File
+				RelativePath=".\rxtree.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Í·ÎÄ¼þ"
@@ -173,6 +177,10 @@
 			>
 			<File
 				RelativePath=".\RTree.h"
+				>
+			</File>
+			<File
+				RelativePath=".\rxtree.h"
 				>
 			</File>
 		</Filter>

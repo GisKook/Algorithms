@@ -131,6 +131,23 @@ bool RTNewTree( RTreePtr *T, struct RTNodeList *list )
    return true;
 }
 
+/*3.1 Searching*/
+/*Algorithm Search*/
+/*In: Parent Node, Search Box  Out: Hit List, Hit Count*/
+bool RTSelectTuple(RTreePtr *T, RTdimension S[], struct RTNodeList **list, size_t *count) {
+	if (!T || !*T) {
+		fputs("RTree cannot be NULL.\n", stderr);
+		return false;
+	}
+
+	if (!list && !count) {
+		fputs("Must have List and/or Count.\n", stderr);
+		return false;
+	}
+
+	return Search(*T, S, list, count);
+}
+
 /*Initializes an array of struct Nodes*/
 static bool InitNodes(struct RTNode *ptr, RTchildindex size) {
 	RTchildindex i;
@@ -140,4 +157,50 @@ static bool InitNodes(struct RTNode *ptr, RTchildindex size) {
 	}
 
 	return true;
+}
+
+/*In: Parent Node, Search Box  Out: Hit List, Hit Count*/
+static bool Search(struct RTNode *T, RTdimension S[], struct RTNodeList **list, size_t *count) {
+	struct RTNodeList *curr = NULL;
+	size_t cnt = 0;
+	RTchildindex i = 0;
+
+	if (count) *count = 0;
+
+	/*S1 [Search subtrees]*/
+	if (IS_BRANCH(T)) {
+		for (i = 0; i < M && !IS_EMPTY(T->Child[i]); ++i)
+			if (Overlap(T->Child[i].I, S)) {
+				if (!Search(T->Child+i, S, list, &cnt)) {
+					if (list) *list = NULL;
+					if (count) *count = 0;
+					return false;
+				}
+				if (count) *count += cnt;
+			}
+
+			return true;
+
+			/*S2 [Search leaf node]*/
+			/*Property (5) - Root and Leaf*/
+	} else if (IS_LEAF(T) || IS_EMPTY(T->Child[0])) {
+		for (i = 0; i < M && !IS_EMPTY(T->Child[i]); ++i)
+			if (Overlap(T->Child[i].I, S)) {
+				if (list) {
+					curr = (struct RTNodeList *)mem_alloc(sizeof(struct RTNodeList));
+					memcpy(curr->I, T->Child[i].I, sizeof(curr->I));
+					curr->Tuple = (T->Child+i)->Tuple;
+					curr->Next = *list;
+					*list = curr;
+				}
+				if (count) (*count)++;
+			}
+
+			return true;
+	}
+
+	fputs("rtree on fire!\n", stderr);
+	if (list) *list = NULL;
+	if (count) *count = 0;
+	return false;
 }

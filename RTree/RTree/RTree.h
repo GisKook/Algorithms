@@ -10,9 +10,9 @@
  */
 
 #include <stdint.h>
-typedef int_fast32_t RTdimension;
-typedef uint_fast8_t RTdimensionindex;
-typedef uint_fast8_t RTchildindex;
+typedef int RTdimension;
+typedef unsigned char RTdimensionindex;
+typedef unsigned char RTchildindex;
 
 #define RTREE_API 
 #define RTn 2
@@ -23,6 +23,9 @@ struct RTNodeList {
    void *Tuple;
    RTdimension I[RTn*2];
 };
+
+struct RTNode;
+typedef struct RTNode * RTreePtr;
 
 bool RTNewTree(RTreePtr *T, struct RTNodeList *list);
 bool RTSelectTuple(RTreePtr *T, RTdimension S[], struct RTNodeList **list, size_t *count);
