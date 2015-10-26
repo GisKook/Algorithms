@@ -1,4 +1,4 @@
-struct rxtconfig{ 
+struct rxtconfig{
 	unsigned int M;
 };
 
@@ -9,6 +9,7 @@ struct rxtroot{
 
 struct rxtree{
 	struct rxtconfig * config;
+	struct rxtroot * root;
 };
 
 static struct rxtnode {
